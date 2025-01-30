@@ -1,115 +1,225 @@
-# Momentum-AutoAllocator
-This Python script allows you to analyze a stock portfolio using momentum strategies, optimize asset allocation, and visualize the results through an interactive interface.
+# Momentum-Sharpe Portfolio Strategy 📈
 
-## Features
+A sophisticated Python implementation of a systematic trading strategy that combines momentum and Sharpe ratio signals to build and manage an equity portfolio. This implementation features an interactive Jupyter interface for real-time strategy adjustment and performance monitoring.
 
-- **Momentum Analysis**: Identify top-performing stocks based on momentum over different time periods (1 day, 1 week, 1 month, YTD, and 1 year).
-- **Performance Metrics**: Calculate portfolio performance, including returns, volatility, and Sharpe ratio.
-- **Optimized Asset Allocation**: Create a balanced portfolio with risk constraints using hierarchical clustering and volatility optimization.
-- **Interactive Analysis**: An interactive interface using ipywidgets to analyze portfolio performance and adjust parameters.
+## Why This Strategy? 🎯
 
-## Requirements
+Traditional momentum strategies often suffer from high volatility and significant drawdowns. By combining momentum with the Sharpe ratio, this strategy aims to select assets that not only show strong price appreciation but also demonstrate favorable risk-adjusted returns characteristics. This dual-signal approach helps mitigate the typical pitfalls of pure momentum strategies while maintaining their positive aspects.
 
-To use this script, you will need to install the following Python packages:
+Key advantages of this hybrid approach:
+- Reduced volatility compared to pure momentum strategies
+- Better downside protection during market turbulence
+- More stable portfolio turnover
+- Enhanced risk-adjusted returns
 
-- `yfinance` for downloading stock data
-- `pandas` for data manipulation
-- `numpy` for numerical operations
-- `scikit-learn` for clustering
-- `ipywidgets` for interactive widgets
-- `IPython` for displaying widgets
+## How It Works 🔄
 
-Install them using pip:
+The strategy operates through several sophisticated mechanisms:
 
+### Signal Generation
+- **Momentum Calculation**: Uses a 252-day (1 year) window to compute price momentum for each asset
+- **Sharpe Ratio Calculation**: Evaluates risk-adjusted returns over the same period
+- **Combined Scoring**: Implements a weighted ranking system combining both signals
+  - Momentum weight is adjustable (default: 70%)
+  - Sharpe ratio complement (default: 30%)
+- **Signal Processing**: Includes data cleaning, outlier handling, and missing data management
+
+### Portfolio Construction
+- Maintains a fixed number of positions (configurable, default: 10)
+- Implements a minimum holding period to reduce excessive trading
+- Uses equal weighting for simplicity and robustness
+- Considers transaction costs for realistic performance assessment
+
+### Risk Management
+- **Position Limits**: Equal weighting ensures no single position dominates
+- **Holding Period**: Enforces minimum holding duration to reduce turnover
+- **Transaction Costs**: Explicitly considers trading fees
+- **Liquidity Management**: Filters out illiquid assets
+- **Drawdown Control**: Monitors and reports maximum portfolio drawdown
+
+## Features 🔧
+
+### Interactive Interface
+The strategy comes with a comprehensive Jupyter-based interface that provides:
+- Real-time parameter adjustment through interactive sliders:
+  - Number of positions
+  - Signal weights
+  - Holding period requirements
+  - Transaction cost assumptions
+- Dynamic visualization updates
+- Performance metrics dashboard
+- Portfolio composition tracking
+- Trade history monitoring
+
+### Data Management
+Robust data handling infrastructure:
+- **Automated Downloads**: Uses yfinance for data acquisition
+- **Data Validation**: Implements comprehensive checks for data quality
+- **Missing Data Handling**: Uses sophisticated interpolation techniques where appropriate
+- **Update Management**: Tracks and updates price data automatically
+
+### Performance Analytics
+Comprehensive performance measurement system:
+- **Returns Analysis**: 
+  - Total return computation
+  - Annualized returns calculation
+  - Risk-adjusted metrics
+- **Risk Metrics**:
+  - Maximum drawdown tracking
+  - Volatility measurement
+  - Sharpe ratio calculation
+- **Trading Analytics**:
+  - Daily transaction counts
+  - Portfolio turnover metrics
+  - Position holding periods
+
+## Installation and Setup 🚀
+
+### Prerequisites
 ```bash
-pip install yfinance pandas numpy scikit-learn ipywidgets IPython
+# Create a new virtual environment (recommended)
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install required packages
+pip install pandas numpy yfinance ipywidgets matplotlib seaborn tqdm
 ```
 
-## Functions
-
-### `get_portfolio_performance(data, tickers, top_n=None)`
-
-This function performs a momentum analysis on a given set of tickers and calculates performance metrics.
-
-#### Arguments:
-- `data`: A Pandas DataFrame containing stock price data.
-- `tickers`: A list of tickers to analyze.
-- `top_n`: The number of top-performing stocks to analyze (default is 10).
-
-#### Returns:
-- `current_top`: A DataFrame with the top performing tickers.
-- `perf`: A dictionary containing performance metrics for different periods.
-- `valorisations`: A dictionary containing portfolio values based on performance.
-- `entries`: A set of tickers that entered the top N rankings.
-- `exits`: A set of tickers that exited the top N rankings.
-- `days_in_topN`: A dictionary with the number of days each ticker stayed in the top N.
-- `data`: The raw stock data used for analysis.
-- `perf_since_entry`: A dictionary with performance since entry for each stock.
-
-### `optimize_vol_constrained(allocation, returns, max_vol)`
-
-Optimizes the portfolio allocation based on a maximum volatility constraint.
-
-#### Arguments:
-- `allocation`: The initial portfolio allocation.
-- `returns`: A DataFrame containing returns for the assets in the portfolio.
-- `max_vol`: The maximum allowed volatility for the portfolio.
-
-#### Returns:
-- The optimized portfolio allocation.
-
-### `get_balanced_portfolio(data, tickers, total_amount=1000, n_clusters=10, momentum_weight=0.6, sharpe_weight=0.4, max_vol=0.25)`
-
-This function constructs a balanced portfolio by clustering stocks based on their correlations and selecting the best performing stocks within each cluster.
-
-#### Arguments:
-- `data`: A DataFrame containing stock price data.
-- `tickers`: A list of tickers to include in the portfolio.
-- `total_amount`: The total amount to invest (default is 1000).
-- `n_clusters`: The number of clusters to create for asset grouping (default is 10).
-- `momentum_weight`: The weight given to the momentum factor in the selection process (default is 0.6).
-- `sharpe_weight`: The weight given to the Sharpe ratio in the selection process (default is 0.4).
-- `max_vol`: The maximum allowed volatility for the portfolio (default is 0.25).
-
-#### Returns:
-- `final_allocation`: A Pandas Series with the final portfolio allocation.
-- `metrics`: A dictionary with portfolio metrics such as return, volatility, and Sharpe ratio.
-- `clusters`: A Series with the cluster assignments for each stock.
-
-### `interactive_portfolio_analysis(TICKERS)`
-
-Launches an interactive analysis interface that allows users to adjust portfolio parameters and analyze results.
-
-#### Arguments:
-- `TICKERS`: A list of stock tickers to analyze.
-
-#### Widgets:
-- **Top N Stocks**: Slider to choose the number of top-performing stocks to consider.
-- **Clusters**: Slider to adjust the number of clusters used in portfolio optimization.
-- **Total Amount (€)**: Input field to specify the total amount to invest.
-- **Momentum Weight**: Input field to adjust the weight of momentum in the portfolio selection.
-- **Sharpe Weight**: Input field to adjust the weight of the Sharpe ratio in the portfolio selection.
-- **Max Volatility**: Input field to specify the maximum allowed volatility for the portfolio.
-
-The interface will display the results, including the top-performing stocks, performance metrics, and optimized portfolio allocation.
-
-## Example Usage
-
-To use the script, simply import it and run the interactive analysis function with a list of stock tickers:
-
+### Initial Configuration
 ```python
-from portfolio_analysis import interactive_portfolio_analysis
+# Import required modules
+from portfolio_strategy import update_stock_data, initialize_strategy
 
-TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]
-interactive_portfolio_analysis(TICKERS)
+# Define your universe of stocks
+TICKERS = ['AAPL', 'MSFT', 'GOOGL', ...]  # Add your preferred stocks
+
+# Update stock data
+data, error = update_stock_data(TICKERS)
+
+# Initialize strategy
+if not error:
+    strategy = initialize_strategy(data)
 ```
 
-## Notes
+## Detailed Parameters ⚙️
 
-- The script uses historical adjusted close prices and volume data from Yahoo Finance.
-- The performance metrics include returns, volatility, and Sharpe ratio, which are annualized based on daily returns.
-- The portfolio optimization uses a maximum volatility constraint to ensure the portfolio doesn't exceed a specified level of risk.
+### Core Parameters
+- **top_n** (default: 10)
+  - Number of positions in the portfolio
+  - Range: 1-50
+  - Impact: Higher numbers increase diversification but may dilute alpha
 
-## License
+- **momentum_weight** (default: 0.7)
+  - Weight given to momentum signal vs Sharpe ratio
+  - Range: 0-1
+  - Impact: Higher values favor price momentum over risk-adjusted returns
 
-This script is licensed under the MIT License.
+- **hold_period** (default: 15)
+  - Minimum holding period in trading days
+  - Range: 5-200
+  - Impact: Higher values reduce turnover but may delay necessary portfolio updates
+
+- **transaction_fee_rate** (default: 0.005)
+  - One-way transaction cost
+  - Range: 0-0.02
+  - Impact: Higher values penalize frequent trading more heavily
+
+### Advanced Features
+- Automatic data quality checks
+- Sophisticated error handling
+- Performance caching
+- Interactive visualization
+- Real-time metrics updates
+
+## Implementation Details 📝
+
+### Trade Execution
+- Decisions are based on previous day's data
+- Trades are executed at next day's opening price
+- Includes realistic slippage and transaction cost modeling
+
+### Performance Optimization
+- Vectorized operations for core calculations
+- Efficient data structures for portfolio tracking
+- Optimized memory usage for large datasets
+- Smart caching of intermediate results
+
+### Error Handling
+- Comprehensive exception management
+- Graceful degradation in case of data issues
+- Detailed logging and error reporting
+- Automatic recovery mechanisms
+
+## Best Practices and Usage Tips 💡
+
+1. **Universe Selection**
+   - Start with liquid, large-cap stocks
+   - Ensure sufficient historical data availability
+   - Consider sector diversification
+
+2. **Parameter Tuning**
+   - Begin with default parameters
+   - Adjust gradually while monitoring impact
+   - Consider your investment horizon
+   - Watch for overfitting
+
+3. **Performance Monitoring**
+   - Regular strategy assessment
+   - Monitor turnover and costs
+   - Track risk metrics
+   - Analyze drawdowns
+
+## Common Issues and Solutions 🔨
+
+1. **Data Quality**
+   - Missing prices
+   - Corporate actions
+   - Survivorship bias
+   - Look-ahead bias
+
+2. **Performance**
+   - Computation speed
+   - Memory usage
+   - Real-time updates
+
+3. **Risk Management**
+   - Position sizing
+   - Sector exposure
+   - Market timing
+   - Drawdown control
+
+## Contributing 🤝
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+When contributing:
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## Disclaimer ⚠️
+
+This strategy implementation is provided for educational and research purposes only. It is not financial advice and should not be used as the sole basis for investment decisions. Past performance does not guarantee future results.
+
+Key risks to consider:
+- Market risk
+- Implementation risk
+- Parameter sensitivity
+- Transaction costs
+- Data quality issues
+- Technology risk
+
+## License 📄
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contact 📫
+
+For questions, suggestions, or collaboration opportunities:
+- Open an issue on GitHub
+- Submit a pull request
+- Contact through project discussions
+
+Your feedback and contributions are greatly appreciated!
