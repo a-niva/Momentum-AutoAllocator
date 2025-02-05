@@ -1,6 +1,6 @@
 # Momentum-Sharpe Portfolio Strategy 📈
 
-A sophisticated Python implementation of a systematic trading strategy that combines momentum and Sharpe ratio signals to build and manage an equity portfolio. This implementation features an interactive Jupyter interface for real-time strategy adjustment and performance monitoring.
+A python framework of a systematic trading strategy that combines momentum and Sharpe ratio signals to build and manage an equity portfolio. Nothing fancy. This implementation features an interactive interface for real-time strategy adjustment and performance monitoring.
 
 ## Why This Strategy? 🎯
 
