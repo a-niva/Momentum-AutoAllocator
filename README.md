@@ -12,6 +12,9 @@ Key advantages of this hybrid approach:
 - More stable portfolio turnover
 - Enhanced risk-adjusted returns
 
+![image](https://github.com/user-attachments/assets/dcb9764f-386c-4bb6-8681-f5754ee57893)
+
+
 ## How It Works 🔄
 
 The strategy operates through several sophisticated mechanisms:
